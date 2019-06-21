@@ -14,7 +14,11 @@ def makeWeightPlot(wMode,
                    perf_plot=False,
                    bias_plot=False,
                    prediction=None,
-                   errorbar=None):
+                   errorbar=None,
+                   label_names=None,
+                   label_order=None,
+                   colors=None
+                   ):
     """Generates a visualization of weights and related plots
     
     Displays a plot (returns nothing) of the weights over trials. Optionally,
@@ -52,46 +56,49 @@ def makeWeightPlot(wMode,
     sigma = 50  # for smoothing performance and bias estimates
 
     # Custom labels for weights based on dataset
-    label_names = {
-        'bias': 'Bias',
-        's1': 'Tone A',
-        's2': 'Tone B',
-        'sL': 'Left contrast',
-        'sR': 'Right contrast',
-        's_avg': 'Avg. Tone',
-        'sBoth': 'Both contrasts',
-        'h': r'Answer',
-        'r': r'Reward',
-        'c': r'Choice'
-    }
+    if label_names is None:
+        label_names = {
+            'bias': 'Bias',
+            's1': 'Tone A',
+            's2': 'Tone B',
+            'sL': 'Left contrast',
+            'sR': 'Right contrast',
+            's_avg': 'Avg. Tone',
+            'sBoth': 'Both contrasts',
+            'h': r'Answer',
+            'r': r'Reward',
+            'c': r'Choice'
+        }
 
     # Set label ordering for legend display
-    label_order = {
-        's1': 0,
-        'sL': 0,
-        's2': 1,
-        'sR': 1,
-        'sBoth': 1,
-        'bias': 2,
-        's_avg': 3,
-        'h': 4,
-        'c': 5,
-        'r': 6
-    }
+    if label_order is None:
+        label_order = {
+            's1': 0,
+            'sL': 0,
+            's2': 1,
+            'sR': 1,
+            'sBoth': 1,
+            'bias': 2,
+            's_avg': 3,
+            'h': 4,
+            'c': 5,
+            'r': 6
+        }
 
     # Manually set good colors
-    colors = {
-        'bias': '#1982C4',
-        's1': '#FF595E',
-        'sL': '#FF595E',
-        's2': '#FFCA3A',
-        'sR': '#FFCA3A',
-        's_avg': 'hotpink',
-        'sBoth': 'hotpink',
-        'h': '#A4036F',
-        'r': '#7353BA',
-        'c': '#8AC926'
-    }
+    if colors is None:
+        colors = {
+            'bias': '#1982C4',
+            's1': '#FF595E',
+            'sL': '#FF595E',
+            's2': '#FFCA3A',
+            'sR': '#FFCA3A',
+            's_avg': 'hotpink',
+            'sBoth': 'hotpink',
+            'h': '#A4036F',
+            'r': '#7353BA',
+            'c': '#8AC926'
+        }
 
     # Determine species of animal being plotted for title
     if 'dataset' not in outData: plot_title = ""
@@ -125,7 +132,6 @@ def makeWeightPlot(wMode,
     weights = []
     for i in sorted(weights_dict.keys()):
         weights += [i]*weights_dict[i]
-    
 
     ### Top Plot, weight trajectories
     ###----------
@@ -210,7 +216,7 @@ def makeWeightPlot(wMode,
 
         untested_inds = [j for j in myrange if j not in test_inds]
         untested_inds = [np.where(myrange == i)[0][0] for i in untested_inds]
-        
+
         xval_mask[untested_inds] = False
 
     # Data simply about which weights were used in the model, to reconstruct g
@@ -220,8 +226,7 @@ def makeWeightPlot(wMode,
 
         X = np.sum(g.T * wMode[:, START:END], axis=0)
 
-
-    ### Perforamce Plot
+    ### Performance Plot
     ###----------
     if perf_plot:
         plt.sca(axs[1])
@@ -274,7 +279,7 @@ def makeWeightPlot(wMode,
         # Draw horizontal line at y=0.5, random choice
         plt.axhline(0.5, color='black', linestyle=':')
 
-        # Add labels, adjuts other formatting
+        # Add labels, adjusts other formatting
         plt.ylabel("Accuracy", fontsize=18, color='red')
         plt.ylim(0.3, 1.0)
         plt.xlim(START, END + 1)
