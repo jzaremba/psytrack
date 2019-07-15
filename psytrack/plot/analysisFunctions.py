@@ -382,3 +382,5 @@ def makeWeightPlot(wMode,
     ###----------
     fig.align_labels()
     plt.tight_layout(h_pad=0.1)
+
+    return fig
