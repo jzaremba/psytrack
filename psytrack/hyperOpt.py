@@ -99,6 +99,12 @@ def hyperOpt(dat, hyper, weights, optList, method=None, showOpt=0, jump=2):
             for val in optList:
                 print(val, np.round(np.log2(current_hyper[val]), 4))
 
+        # Jump to end if nothing to optimize in optList
+        if not optList:
+            if showOpt:
+                print("Jumping to end. Nothing to optimize in optList")
+            break
+
         # Jump to end if evidence was worse enough times
         if not current_jump:
             if showOpt:
